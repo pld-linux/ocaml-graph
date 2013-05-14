@@ -1,7 +1,7 @@
 Summary:	OCaml library for arc and node graphs
 Name:		ocaml-graph
 Version:	1.8.2
-Release:	1
+Release:	2
 License:	LGPLv2 with exceptions
 Group:		Libraries
 Source0:	http://ocamlgraph.lri.fr/download/ocamlgraph-%{version}.tar.gz
@@ -30,7 +30,6 @@ tools.
 %package devel
 Summary:	OCaml library for arc and node graphs - development files
 Group:		Development/Libraries
-Requires:	%{name} = %{version}-%{release}
 %requires_eq	ocaml
 
 %description devel
