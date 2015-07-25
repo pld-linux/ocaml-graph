@@ -1,7 +1,16 @@
+#
+# Conditional build:
+%bcond_without	ocaml_opt	# skip building native optimized binaries (bytecode is always built)
+
+# not yet available on x32 (ocaml 4.02.1), remove when upstream will support it
+%ifnarch %{ix86} %{x8664} arm aarch64 ppc sparc sparcv9
+%undefine	with_ocaml_opt
+%endif
+
 Summary:	OCaml library for arc and node graphs
 Name:		ocaml-graph
 Version:	1.8.2
-Release:	3
+Release:	4
 License:	LGPLv2 with exceptions
 Group:		Libraries
 Source0:	http://ocamlgraph.lri.fr/download/ocamlgraph-%{version}.tar.gz
@@ -52,13 +61,14 @@ Ocamlgraph library.
 %build
 %configure
 
-%{__make} CC="%{__cc} %{rpmcflags} -fPIC" opt
+%{__make} -j1 all %{?with_ocaml_opt:opt} \
+	CC="%{__cc} %{rpmcflags} -fPIC"
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT%{_libdir}/ocaml/{ocamlgraph,stublibs}
-install *.cm[ixa]* *.a $RPM_BUILD_ROOT%{_libdir}/ocaml/ocamlgraph
+install *.cm[ixa]* %{?with_ocaml_opt:*.a} $RPM_BUILD_ROOT%{_libdir}/ocaml/ocamlgraph
 
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 cp -r examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
@@ -82,7 +92,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc CHANGES CREDITS FAQ
 %doc LICENSE lib/*.mli src/*.mli
 %dir %{_libdir}/ocaml/ocamlgraph
-%{_libdir}/ocaml/ocamlgraph/*.cm[ixa]*
-%{_libdir}/ocaml/ocamlgraph/*.a
+%{_libdir}/ocaml/ocamlgraph/*.cma
+%{_libdir}/ocaml/ocamlgraph/*.cm[ix]
+%if %{with ocaml_opt}
+%{_libdir}/ocaml/ocamlgraph/*.[ao]
+%{_libdir}/ocaml/ocamlgraph/*.cmxa
+%endif
 %{_examplesdir}/%{name}-%{version}
 %{_libdir}/ocaml/site-lib/ocamlgraph
