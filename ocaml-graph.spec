@@ -10,7 +10,7 @@
 Summary:	OCaml library for arc and node graphs
 Name:		ocaml-graph
 Version:	1.8.2
-Release:	4
+Release:	5
 License:	LGPLv2 with exceptions
 Group:		Libraries
 Source0:	http://ocamlgraph.lri.fr/download/ocamlgraph-%{version}.tar.gz
@@ -68,7 +68,7 @@ Ocamlgraph library.
 rm -rf $RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT%{_libdir}/ocaml/{ocamlgraph,stublibs}
-install *.cm[ixa]* %{?with_ocaml_opt:*.a} $RPM_BUILD_ROOT%{_libdir}/ocaml/ocamlgraph
+install *.cm[ixao]* %{?with_ocaml_opt:*.a} $RPM_BUILD_ROOT%{_libdir}/ocaml/ocamlgraph
 
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 cp -r examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
@@ -93,6 +93,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc LICENSE lib/*.mli src/*.mli
 %dir %{_libdir}/ocaml/ocamlgraph
 %{_libdir}/ocaml/ocamlgraph/*.cma
+%{_libdir}/ocaml/ocamlgraph/*.cmo
 %{_libdir}/ocaml/ocamlgraph/*.cm[ix]
 %if %{with ocaml_opt}
 %{_libdir}/ocaml/ocamlgraph/*.[ao]
