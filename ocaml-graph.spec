@@ -38,6 +38,7 @@ format and Dot and Neato graphviz (graph visualization) tools.
 %package devel
 Summary:	OCaml library for arc and node graphs - development files
 Group:		Development/Libraries
+Requires:	%{name} = %{version}-%{release}
 %requires_eq ocaml
 
 %description devel
