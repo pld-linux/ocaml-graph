@@ -12,15 +12,18 @@
 Summary:	OCaml library for arc and node graphs
 Summary(pl.UTF-8):	Biblioteka OCamla do grafów z wierzchołków i krawędzi
 Name:		ocaml-graph
-Version:	1.8.8
-Release:	2
-License:	LGPL v2 with exceptions
+Version:	2.0.0
+Release:	1
+License:	LGPL v2.1 with exceptions
 Group:		Libraries
-Source0:	http://ocamlgraph.lri.fr/download/ocamlgraph-%{version}.tar.gz
-# Source0-md5:	9d71ca69271055bd22d0dfe4e939831a
+#Source0Download: https://github.com/backtracking/ocamlgraph/releases
+Source0:	https://github.com/backtracking/ocamlgraph/releases/download/%{version}/ocamlgraph-%{version}.tbz
+# Source0-md5:	2d07fcf3501e1d4997c03fa94cea22f0
+Patch0:		%{name}-no-stdlib-shims.patch
 URL:		http://ocamlgraph.lri.fr/
 BuildRequires:	libart_lgpl-devel
 BuildRequires:	ocaml >= 3.10.0
+BuildRequires:	ocaml-dune >= 2.0
 BuildRequires:	ocaml-findlib-devel
 BuildRequires:	ocaml-lablgtk2-devel
 BuildRequires:	ocaml-lablgtk2-gnome-devel
@@ -84,30 +87,62 @@ wizualizacji grafów).
 Pakiet ten zawiera pliki niezbędne do tworzenia programów w OCamlu
 używających biblioteki Ocamlgraph.
 
+%package gtk
+Summary:	Displaying graphs using OCamlGraph and GTK
+Summary(pl.UTF-8):	Wyświetlanie grafów przy użyciu bibliotek OCamlGraph i GTK
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description gtk
+Displaying graphs using OCamlGraph and GTK.
+
+%description gtk -l pl.UTF-8
+Wyświetlanie grafów przy użyciu bibliotek OCamlGraph i GTK.
+
+%package gtk-devel
+Summary:	Displaying graphs using OCamlGraph and GTK - development files
+Summary(pl.UTF-8):	Wyświetlanie grafów przy użyciu bibliotek OCamlGraph i GTK - pliki programistyczne
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description gtk-devel
+Displaying graphs using OCamlGraph and GTK.
+
+This package contains files needed to develop OCaml programs using
+Ocamlgraph GTK library.
+
+%description gtk-devel -l pl.UTF-8
+Wyświetlanie grafów przy użyciu bibliotek OCamlGraph i GTK.
+
+Pakiet ten zawiera pliki niezbędne do tworzenia programów w OCamlu
+używających biblioteki Ocamlgraph GTK.
+
 %prep
 %setup -q -n ocamlgraph-%{version}
+%patch0 -p1
 
 %build
-%configure
-
-%{__make} -j1 all %{?with_ocaml_opt:opt} \
-	CC="%{__cc} %{rpmcflags} -fPIC"
+dune build --verbose
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_libdir}/ocaml/ocamlgraph,%{_examplesdir}/%{name}-%{version}}
 
-cp -p *.cm[ixao]* %{?with_ocaml_opt:*.a} $RPM_BUILD_ROOT%{_libdir}/ocaml/ocamlgraph
-cp -p META $RPM_BUILD_ROOT%{_libdir}/ocaml/ocamlgraph
+dune install --destdir=$RPM_BUILD_ROOT
 
+install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 cp -r examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+
+# sources
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/ocaml/{ocamlgraph,ocamlgraph_gtk}/*.ml
+# packaged as %doc
+%{__rm} -r $RPM_BUILD_ROOT%{_prefix}/doc/{ocamlgraph,ocamlgraph_gtk}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc CHANGES COPYING CREDITS FAQ LICENSE README.adoc
+%doc CHANGES.md COPYING CREDITS FAQ LICENSE README.md TODO.md
 %dir %{_libdir}/ocaml/ocamlgraph
 %{_libdir}/ocaml/ocamlgraph/META
 %{_libdir}/ocaml/ocamlgraph/*.cma
@@ -117,12 +152,38 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
-%doc lib/*.mli src/*.mli
 %{_libdir}/ocaml/ocamlgraph/*.cmi
-%{_libdir}/ocaml/ocamlgraph/*.cmo
+%{_libdir}/ocaml/ocamlgraph/*.cmt
+%{_libdir}/ocaml/ocamlgraph/*.cmti
+%{_libdir}/ocaml/ocamlgraph/*.mli
 %if %{with ocaml_opt}
 %{_libdir}/ocaml/ocamlgraph/*.a
 %{_libdir}/ocaml/ocamlgraph/*.cmx
 %{_libdir}/ocaml/ocamlgraph/*.cmxa
 %endif
+%{_libdir}/ocaml/ocamlgraph/dune-package
+%{_libdir}/ocaml/ocamlgraph/opam
 %{_examplesdir}/%{name}-%{version}
+
+%files gtk
+%defattr(644,root,root,755)
+%dir %{_libdir}/ocaml/ocamlgraph_gtk
+%{_libdir}/ocaml/ocamlgraph_gtk/META
+%{_libdir}/ocaml/ocamlgraph_gtk/*.cma
+%if %{with ocaml_opt}
+%attr(755,root,root) %{_libdir}/ocaml/ocamlgraph_gtk/*.cmxs
+%endif
+
+%files gtk-devel
+%defattr(644,root,root,755)
+%{_libdir}/ocaml/ocamlgraph_gtk/*.cmi
+%{_libdir}/ocaml/ocamlgraph_gtk/*.cmt
+%{_libdir}/ocaml/ocamlgraph_gtk/*.cmti
+%{_libdir}/ocaml/ocamlgraph_gtk/*.mli
+%if %{with ocaml_opt}
+%{_libdir}/ocaml/ocamlgraph_gtk/*.a
+%{_libdir}/ocaml/ocamlgraph_gtk/*.cmx
+%{_libdir}/ocaml/ocamlgraph_gtk/*.cmxa
+%endif
+%{_libdir}/ocaml/ocamlgraph_gtk/dune-package
+%{_libdir}/ocaml/ocamlgraph_gtk/opam

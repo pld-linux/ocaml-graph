@@ -1,0 +1,41 @@
+--- ocamlgraph-2.0.0/ocamlgraph_gtk.opam.orig	2020-10-02 15:47:57.000000000 +0200
++++ ocamlgraph-2.0.0/ocamlgraph_gtk.opam	2021-12-20 20:47:27.574013548 +0100
+@@ -19,7 +19,6 @@ homepage: "https://github.com/backtracki
+ bug-reports: "https://github.com/backtracking/ocamlgraph/issues/new"
+ depends: [
+   "ocaml"
+-  "stdlib-shims"
+   "lablgtk"
+   "conf-gnomecanvas"
+   "ocamlgraph"
+--- ocamlgraph-2.0.0/ocamlgraph.opam.orig	2020-10-02 15:47:57.000000000 +0200
++++ ocamlgraph-2.0.0/ocamlgraph.opam	2021-12-20 20:47:53.010542413 +0100
+@@ -19,7 +19,6 @@ homepage: "https://github.com/backtracki
+ bug-reports: "https://github.com/backtracking/ocamlgraph/issues/new"
+ depends: [
+   "ocaml"
+-  "stdlib-shims"
+   "dune" {>= "2.0"}
+ ]
+ build: [
+--- ocamlgraph-2.0.0/dgraph/dune.orig	2020-10-02 15:47:57.000000000 +0200
++++ ocamlgraph-2.0.0/dgraph/dune	2021-12-20 20:50:39.002976488 +0100
+@@ -2,7 +2,7 @@
+  (name graph_gtk)
+  (public_name ocamlgraph_gtk)
+  (modules :standard \ dGraphViewer)
+- (libraries ocamlgraph stdlib-shims lablgtk2.gnomecanvas lablgtk2)
++ (libraries ocamlgraph lablgtk2.gnomecanvas lablgtk2)
+  (flags -open Graph))
+ 
+ (executable
+--- ocamlgraph-2.0.0/src/dune.orig	2020-10-02 15:47:57.000000000 +0200
++++ ocamlgraph-2.0.0/src/dune	2021-12-20 20:55:21.191447742 +0100
+@@ -3,7 +3,6 @@
+ (library
+  (name graph)
+  (public_name ocamlgraph)
+- (libraries stdlib-shims)
+  (modules_without_implementation dot_ast sig sig_pack))
+ 
+ (ocamlyacc dot_parser)
