@@ -1,27 +1,29 @@
 #
 # Conditional build:
-%bcond_without	ocaml_opt	# skip building native optimized binaries (bytecode is always built)
+%bcond_without	ocaml_opt	# native optimized binaries (bytecode is always built)
 
-# not yet available on x32 (ocaml 4.02.1), remove when upstream will support it
-%ifnarch %{ix86} %{x8664} arm aarch64 ppc sparc sparcv9
+# not yet available on x32 (ocaml 4.02.1), update when upstream will support it
+%ifnarch %{ix86} %{x8664} %{arm} aarch64 ppc sparc sparcv9
 %undefine	with_ocaml_opt
 %endif
 
 %define		_enable_debug_packages	0
 
 Summary:	OCaml library for arc and node graphs
+Summary(pl.UTF-8):	Biblioteka OCamla do grafów z wierzchołków i krawędzi
 Name:		ocaml-graph
 Version:	1.8.8
-Release:	1
-License:	LGPLv2 with exceptions
+Release:	2
+License:	LGPL v2 with exceptions
 Group:		Libraries
 Source0:	http://ocamlgraph.lri.fr/download/ocamlgraph-%{version}.tar.gz
 # Source0-md5:	9d71ca69271055bd22d0dfe4e939831a
 URL:		http://ocamlgraph.lri.fr/
 BuildRequires:	libart_lgpl-devel
-BuildRequires:	ocaml >= 3.04-7
+BuildRequires:	ocaml >= 3.10.0
 BuildRequires:	ocaml-findlib-devel
 BuildRequires:	ocaml-lablgtk2-devel
+BuildRequires:	ocaml-lablgtk2-gnome-devel
 %requires_eq	ocaml-runtime
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -35,8 +37,21 @@ and data structures are written functorially for maximal reusability.
 Also has input and output capability for Graph Modeling Language file
 format and Dot and Neato graphviz (graph visualization) tools.
 
+%description -l pl.UTF-8
+Ocamlgraph udostępnia kilka różnych implementacji struktur danych
+grafów. Zawiera także implementacje wielu klasycznych algorytmów
+grafowych, m.in. algorytm Kruskala wyznaczania drzewa rozpinającego,
+sortowania topologicznego skierowanych grafów acyklicznych, algorytm
+najkrótszej ścieżki Dijkstry, algorytm maksymalnego przepływu
+Forda-Fulkersona. Algorytmy i struktury danych zostały napisane w
+oparciu o funktory w celu zwiększenia możliwości zastosowań. Możliwe
+jest także wejście i wyjście w postaci formatu plików Graph Modeling
+Language oraz narzędzi Dot i Neato z projektu graphviz (służącego do
+wizualizacji grafów).
+
 %package devel
 Summary:	OCaml library for arc and node graphs - development files
+Summary(pl.UTF-8):	Biblioteka OCamla do grafów łuków i węzłów - pliki programistyczne
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 %requires_eq ocaml
@@ -53,6 +68,21 @@ format and Dot and Neato graphviz (graph visualization) tools.
 
 This package contains files needed to develop OCaml programs using
 Ocamlgraph library.
+
+%description devel -l pl.UTF-8
+Ocamlgraph udostępnia kilka różnych implementacji struktur danych
+grafów. Zawiera także implementacje wielu klasycznych algorytmów
+grafowych, m.in. algorytm Kruskala wyznaczania drzewa rozpinającego,
+sortowania topologicznego skierowanych grafów acyklicznych, algorytm
+najkrótszej ścieżki Dijkstry, algorytm maksymalnego przepływu
+Forda-Fulkersona. Algorytmy i struktury danych zostały napisane w
+oparciu o funktory w celu zwiększenia możliwości zastosowań. Możliwe
+jest także wejście i wyjście w postaci formatu plików Graph Modeling
+Language oraz narzędzi Dot i Neato z projektu graphviz (służącego do
+wizualizacji grafów).
+
+Pakiet ten zawiera pliki niezbędne do tworzenia programów w OCamlu
+używających biblioteki Ocamlgraph.
 
 %prep
 %setup -q -n ocamlgraph-%{version}
@@ -77,7 +107,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc CHANGES CREDITS FAQ
+%doc CHANGES COPYING CREDITS FAQ LICENSE README.adoc
 %dir %{_libdir}/ocaml/ocamlgraph
 %{_libdir}/ocaml/ocamlgraph/META
 %{_libdir}/ocaml/ocamlgraph/*.cma
@@ -87,11 +117,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
-%doc LICENSE lib/*.mli src/*.mli
+%doc lib/*.mli src/*.mli
+%{_libdir}/ocaml/ocamlgraph/*.cmi
 %{_libdir}/ocaml/ocamlgraph/*.cmo
-%{_libdir}/ocaml/ocamlgraph/*.cm[ix]
 %if %{with ocaml_opt}
-%{_libdir}/ocaml/ocamlgraph/*.[ao]
+%{_libdir}/ocaml/ocamlgraph/*.a
+%{_libdir}/ocaml/ocamlgraph/*.cmx
 %{_libdir}/ocaml/ocamlgraph/*.cmxa
 %endif
 %{_examplesdir}/%{name}-%{version}
