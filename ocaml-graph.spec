@@ -13,7 +13,7 @@ Summary:	OCaml library for arc and node graphs
 Summary(pl.UTF-8):	Biblioteka OCamla do grafów z wierzchołków i krawędzi
 Name:		ocaml-graph
 Version:	2.0.0
-Release:	1
+Release:	2
 License:	LGPL v2.1 with exceptions
 Group:		Libraries
 #Source0Download: https://github.com/backtracking/ocamlgraph/releases
